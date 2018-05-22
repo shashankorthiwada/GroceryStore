@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans">
+
+<mvc:annotation-driven/>
+
+<context:component-scan base-package="com.cdac"/>
+
+
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+
+<property value="/" name="prefix"/>
+
+<property value=".jsp" name="suffix"/>
+
+</bean>
+
+<!-- This bean will hold references to our database -->
+
+
+
+<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource2">
+
+<property value="com.mysql.jdbc.Driver" name="driverClassName"/>
+
+<property value="jdbc:mysql://localhost/cdac" name="url"/>
+
+<property value="root" name="username"/>
+
+<property value="root" name="password"/>
+
+</bean>
+
+<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+<!-- Spring way of entity manager factory configuration -->
+
+
+
+<bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
+
+<property name="dataSource" ref="dataSource2"/>
+
+<property value="com.cdac.bean" name="packagesToScan"/>
+
+<property value="org.hibernate.jpa.HibernatePersistenceProvider" name="persistenceProviderClass"/>
+
+
+<property name="jpaPropertyMap">
+
+
+<map>
+
+<entry value="org.hibernate.dialect.MySQLDialect" key="hibernate.dialect"/>
+
+<entry value="update" key="hibernate.hbm2ddl.auto"/>
+
+</map>
+
+</property>
+
+</bean>
+
+<!-- This bean will handle all transaction within an application -->
+
+
+
+<bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
+
+<property name="entityManagerFactory" ref="entityManagerFactory"/>
+
+</bean>
+
+<!-- This is required to handle transactions via Annotations like @Transactional -->
+
+
+<tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>
