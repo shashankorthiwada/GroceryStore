@@ -1,0 +1,1 @@
+This is a Spring MVC project for jars refer jars.txt in lib folder of web content folder
